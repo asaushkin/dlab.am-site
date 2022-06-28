@@ -6,3 +6,7 @@ Gemfile.lock
 .jekyll-cache
 /public/
 .tool-versions
+.envrc
+.idea
+.python-version
+*.iml

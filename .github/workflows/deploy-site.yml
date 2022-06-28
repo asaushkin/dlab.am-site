@@ -1,0 +1,26 @@
+name: Build and deploy to AWS
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  github-pages:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v2
+      - name: Configure credentials from AWS account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Apply site changes
+        run: |
+          sudo gem install jekyll jekyll-timeago
+          jekyll build -d public
+          cd public && zip -r ../frontend-artifact.zip . && cd ..
+          aws s3 cp frontend-artifact.zip s3://dlab.am-codepipeline/
