@@ -2,8 +2,22 @@
 layout: post
 title: Consequat
 description: Ipsum dolor sit amet
-image: assets/images/pic05.jpg
+#image: /assets/images/pic05.jpg
 ---
+
+# This is sample content
+
+![alt text](/assets/images/pic05.jpg){:style="display:block; margin-left:auto; margin-right:auto"}
+
+{% highlight cpp %}
+int add(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    cout << add(5, 10);
+}
+{% endhighlight %}
 
 Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. 
 Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. 

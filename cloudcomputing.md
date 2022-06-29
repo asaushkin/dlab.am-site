@@ -1,6 +1,7 @@
 ---
 layout: page
-title: Elements
+title: Cloud computing
+description: The most extensive subject
 image: assets/images/pic01.jpg
 nav-menu: true
 ---

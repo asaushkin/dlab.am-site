@@ -20,7 +20,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Apply site changes
         run: |
-          sudo gem install jekyll jekyll-timeago
+          sudo gem install jekyll jekyll-timeago rouge
           jekyll build -d public
           cd public && zip -r ../frontend-artifact.zip . && cd ..
           aws s3 cp frontend-artifact.zip s3://dlab.am-codepipeline/
