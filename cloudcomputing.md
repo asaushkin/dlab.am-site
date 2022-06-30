@@ -1,8 +1,8 @@
 ---
 layout: page
 title: Cloud computing
-description: The most extensive subject
-image: assets/images/pic01.jpg
+description: Global cloud infrastructures
+image: /assets/images/pic01.jpg
 nav-menu: true
 ---
 
