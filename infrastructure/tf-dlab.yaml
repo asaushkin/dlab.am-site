@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description:  Initial infrastructute for terraform
+
+Parameters:
+  Project:
+    Type: String
+    Default: dlab.am
+
+Resources:
+  TerraformState:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      AccessControl: Private
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      Tags:
+        - Key: "Project"
+          Value: !Ref Project
+      VersioningConfiguration:
+        Status: Enabled
+
+  LockTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: "LockID"
+          AttributeType: "S"
+      KeySchema:
+        -
+          AttributeName: "LockID"
+          KeyType: "HASH"
+      BillingMode: PAY_PER_REQUEST
