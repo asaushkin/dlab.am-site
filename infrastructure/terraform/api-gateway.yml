@@ -1,0 +1,73 @@
+openapi: 3.0.1
+info:
+  title: Dlab API
+  description: Dlab API
+  contact:
+    email: asaushkin@gmail.com
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://dlab.am/v1
+
+paths:
+  /hello:
+    options:
+      summary: CORS support
+      description: |
+        Enable CORS by returning correct headers
+      tags:
+        - CORS
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              method.response.header.Access-Control-Allow-Methods: "'*'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: |
+                {}
+    get:
+      summary: Hello
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid request
+          content: {}
+        404:
+          description: Tags not found
+          content: {}
+
+      x-amazon-apigateway-integration:
+        httpMethod: "POST"
+        uri: "${hello}"
+        responses:
+          default:
+            statusCode: "200"
+        passthroughBehavior: "when_no_match"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws_proxy"
