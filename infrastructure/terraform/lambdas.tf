@@ -137,7 +137,7 @@ resource "aws_lambda_function" "hello" {
   handler       = null
   runtime       = null
   package_type  = "Image"
-  image_uri     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${local.name}/lambdas-common:latest"
+  image_uri     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/lambdas-common:latest"
 
   image_config {
     command = [ "hello.handler" ]

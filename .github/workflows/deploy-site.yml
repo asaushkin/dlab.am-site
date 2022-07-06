@@ -18,12 +18,6 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
-      - name: Apply site changes
-        run: |
-          sudo gem install jekyll jekyll-timeago rouge
-          jekyll build -d public
-          cd public && zip -r ../frontend-artifact.zip . && cd ..
-          aws s3 cp frontend-artifact.zip s3://dlab.am-codepipeline/
 
       - name: Apply infrastructure changes
         run: |
@@ -43,5 +37,13 @@ jobs:
           for lambda in $(cat ../terraform/lambdas.tf | grep function_name | grep local | grep -v \# | grep -o '[^-]\+$' | tr -d /'"'//);
           do
             aws lambda update-function-code --function-name "dev-$lambda" \
-              --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/qa/lambdas-common:latest
+              --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/lambdas-common:latest
           done
+
+      - name: Apply site changes
+        run: |
+          sudo gem install jekyll jekyll-timeago rouge
+          jekyll build -d public
+          cd public && zip -r ../frontend-artifact.zip . && cd ..
+          aws s3 cp frontend-artifact.zip s3://${{ secrets.AWS_CODEPIPEILINE_BUCKET }}/
+
