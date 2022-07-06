@@ -131,8 +131,8 @@ data "aws_caller_identity" "current" {}
 resource "aws_lambda_function" "hello" {
   function_name    = "${local.name}-hello"
   role             = aws_iam_role.lambda_role.arn
-  memory_size      = 512
-  timeout          = 120
+  memory_size      = 128
+  timeout          = 3
 
   handler       = null
   runtime       = null
@@ -146,7 +146,7 @@ resource "aws_lambda_function" "hello" {
   environment {
     variables = {
       ENV         = local.name
-
+      LOG_LEVEL   = "INFO"
     }
   }
 
