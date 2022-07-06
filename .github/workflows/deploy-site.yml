@@ -18,14 +18,32 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            infra:
+              - 'infrastructure/terraform/**'
+            backend:
+              - 'infrastructure/lambdas/**'
+            frontend:
+              - '_includes/**'
+              - '_layouts/**'
+              - '_posts/**'
+              - '_sass/**'
+              - 'assets/**'
+              - '*.md'
+              - '_config.yml'
 
       - name: Apply infrastructure changes
+        if: steps.filter.outputs.infra == 'true'
         run: |
           cd infrastructure/terraform
           terraform init -backend-config=backend.hcl
           terraform apply -auto-approve
 
       - name: Build lambdas image
+        if: steps.filter.outputs.backend == 'true'
         run: |
           cd infrastructure/lambdas/
 
@@ -41,6 +59,7 @@ jobs:
           done
 
       - name: Apply site changes
+        if: steps.filter.outputs.frontend == 'true'
         run: |
           sudo gem install jekyll jekyll-timeago rouge
           jekyll build -d public

@@ -1,19 +1,15 @@
+import json
 import logging
 import os
-import json
+import utils
 
 log = logging.getLogger(__name__)
+log.setLevel(os.getenv('DEBUG', logging.WARNING))
 
 
 def handler(event, context):
-    log.error('Got event data: %s', event)
-    json_region = os.environ['AWS_REGION']
-    return {
-        "statusCode": 200,
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "body": json.dumps({
-            "Region ": json_region
-        })
-    }
+    log.debug('Got event data: %s', json.dumps(event))
+
+    return utils.proxy_data({
+        "Region ": os.environ['AWS_REGION']
+    }, log)
