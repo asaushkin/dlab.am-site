@@ -25,11 +25,11 @@ jobs:
           cd public && zip -r ../frontend-artifact.zip . && cd ..
           aws s3 cp frontend-artifact.zip s3://dlab.am-codepipeline/
 
-      #- name: Apply infrastructure changes
-      #  run: |
-      #    cd infrastructure/terraform
-      #    terraform init -backend-config=backend.hcl
-      #    terraform apply -auto-approve
+      - name: Apply infrastructure changes
+        run: |
+          cd infrastructure/terraform
+          terraform init -backend-config=backend.hcl
+          terraform apply -auto-approve
 
       - name: Build lambdas image
         run: |
@@ -40,8 +40,8 @@ jobs:
           docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/lambdas-common:latest .
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/lambdas-common:latest
 
-          #for lambda in $(cat ../environments/qa/web-module/lambdas.tf | grep function_name | grep local | grep -v \# | grep -o '[^-]\+$' | tr -d /'"'//);
-          #do
-          #  aws lambda update-function-code --function-name "qa-$lambda" \
-          #    --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/qa/lambdas-common:latest
-          #done
+          for lambda in $(cat ../terraform/lambdas.tf | grep function_name | grep local | grep -v \# | grep -o '[^-]\+$' | tr -d /'"'//);
+          do
+            aws lambda update-function-code --function-name "dev-$lambda" \
+              --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/qa/lambdas-common:latest
+          done
