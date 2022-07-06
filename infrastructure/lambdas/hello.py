@@ -4,7 +4,7 @@ import os
 import utils
 
 log = logging.getLogger(__name__)
-log.setLevel(os.getenv('DEBUG', logging.WARNING))
+log.setLevel(os.getenv('LOG_LEVEL', logging.WARNING))
 
 
 def handler(event, context):

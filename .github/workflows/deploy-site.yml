@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  github-pages:
+  deploy:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -38,13 +38,20 @@ jobs:
       - name: Apply infrastructure changes
         if: steps.filter.outputs.infra == 'true'
         run: |
+          set -e
+
           cd infrastructure/terraform
           terraform init -backend-config=backend.hcl
           terraform apply -auto-approve
 
+          aws sns publish --topic-arn arn:aws:sns:eu-central-1:661982601103:GeneralNotifications \
+            --message "The infrastructure was deployed successfully!"
+
       - name: Build lambdas image
         if: steps.filter.outputs.backend == 'true'
         run: |
+          set -e
+
           cd infrastructure/lambdas/
 
           aws ecr get-login-password | \
@@ -58,9 +65,14 @@ jobs:
               --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/lambdas-common:latest
           done
 
+          aws sns publish --topic-arn arn:aws:sns:eu-central-1:661982601103:GeneralNotifications \
+            --message "The lambdas were deployed successfully!"
+
       - name: Apply site changes
         if: steps.filter.outputs.frontend == 'true'
         run: |
+          set -e
+
           sudo gem install jekyll jekyll-timeago rouge
           jekyll build -d public
           cd public && zip -r ../frontend-artifact.zip . && cd ..
