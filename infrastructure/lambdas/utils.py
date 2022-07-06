@@ -1,9 +1,17 @@
 import json
+import logging
+import os
 
 
-def proxy_data(data, logger):
+def log():
+    log = logging.getLogger()
+    log.setLevel(os.getenv('LOG_LEVEL', logging.WARNING))
+    return log
+
+
+def proxy_data(data, code=200):
     retval = {
-        "statusCode": 200,
+        "statusCode": code,
         "headers": {
             "Content-Type": "application/json",
             'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key',
@@ -13,6 +21,5 @@ def proxy_data(data, logger):
         "body": json.dumps(data)
     }
 
-    logger.debug('Return data: %s', json.dumps(retval))
+    log().info('Return data: %s', json.dumps(retval))
     return retval
-
